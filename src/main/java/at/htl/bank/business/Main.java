@@ -4,7 +4,9 @@ import at.htl.bank.model.BankKonto;
 import at.htl.bank.model.GiroKonto;
 import at.htl.bank.model.SparKonto;
 
-import java.io.*;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -14,6 +16,8 @@ import java.util.Scanner;
  *
  */
 public class Main {
+
+  public static ArrayList<BankKonto> list = new ArrayList<>();
 
   // die Konstanten sind package-scoped wegen der Unit-Tests
   static final double GEBUEHR = 0.02;
@@ -31,7 +35,9 @@ public class Main {
    * @param args
    */
   public static void main(String[] args) {
-
+      erstelleKonten(KONTENDATEI);
+      fuehreBuchungenDurch(BUCHUNGSDATEI);
+      schreibeKontostandInDatei(ERGEBNISDATEI);
   }
 
   /**
@@ -45,8 +51,21 @@ public class Main {
    * @param datei KONTENDATEI
    */
   private static void erstelleKonten(String datei) {
-
-        System.out.println("erstelleKonten noch nicht implementiert");
+    try(Scanner scanner = new Scanner(new FileReader(datei))) {
+      scanner.nextLine();
+      while(scanner.hasNextLine()){
+        String line = scanner.nextLine();
+        String[] split = line.split(";");
+        double betrag = Double.valueOf(split[2]);
+        if(split[0].equals("Sparkonto")){
+          list.add(new SparKonto(split[1], betrag));
+        } else{
+          list.add(new GiroKonto(split[1], betrag));
+        }
+      }
+    } catch (FileNotFoundException e) {
+      System.err.println(e.getMessage());
+    }
   }
 
   /**
@@ -64,7 +83,19 @@ public class Main {
    * @param datei BUCHUNGSDATEI
    */
   private static void fuehreBuchungenDurch(String datei) {
-        System.out.println("fuehreBuchungenDurch noch nicht implementiert");
+        try(Scanner scanner = new Scanner(new FileReader(datei))){
+          scanner.nextLine();
+          while(scanner.hasNextLine()){
+            String line = scanner.nextLine();
+            String[] split = line.split(";");
+            String vonKonto = split[0];
+            String aufKonto = split[1];
+            double betrag = Double.valueOf(split[2]);
+
+          }
+        } catch (FileNotFoundException e) {
+          System.err.println(e.getMessage());
+        }
   }
 
   /**
